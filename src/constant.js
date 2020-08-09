@@ -1,0 +1,11 @@
+export const constant = {
+    "MODE_EASY" : 1,
+    "MODE_INTERMEDIATE" : 2,
+    "MODE_EXPERT" : 3,
+    "MODE_EASY_BOARD_SIZE" : [8, 8],
+    "MODE_INTERMEDIATE_BOARD_SIZE" : [15, 13],
+    "MODE_EXPERT_BOARD_SIZE" : [30, 16],
+    "MODE_EASY_BOMB_COUNT" : 10,
+    "MODE_INTERMEDIATE_BOMB_COUNT" : 40,
+    "MODE_EXPERT_BOMB_COUNT" : 99,
+}
