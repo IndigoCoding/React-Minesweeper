@@ -21,12 +21,13 @@ export const initBoardState = (mode, setBoardState) => {
     for(let i = 0; i < boardSize[0] * boardSize[1]; i++){
         tmpBoard[i] = {
             'isBomb': false,
-            'value' : getRandom(boardSize[0] * boardSize[1]),
+            'sortValue' : getRandom(boardSize[0] * boardSize[1]),
+            'value' : 0,
             'index' : i
         };
     }
 
-    tmpBoard.sort((a, b) => b.value - a.value);
+    tmpBoard.sort((a, b) => b.sortValue - a.sortValue);
 
     for(let i = 0; i < boardSize[0] * boardSize[1]; i++){
         if(i < bombCount){
@@ -40,8 +41,26 @@ export const initBoardState = (mode, setBoardState) => {
         finalBoard.push(tmpBoard.splice(0, boardSize[0]));
     }
 
-    console.log(finalBoard);
-    setBoardState(finalBoard);
+    setBoardState(countBombNumber(finalBoard));
+}
+
+const countBombNumber = (board) => {
+    for(let Y = 0; Y < board.length ; Y++){
+        for(let X = 0; X < board[Y].length; X++){
+            // get adjacent state and update bomb count
+            for(let adjY = -1; adjY <= 1; adjY++){
+                for(let adjX = -1; adjX <= 1; adjX++){
+                    if(adjY === 0 && adjX === 0){
+                        continue;
+                    }
+                    if(Y - adjY > -1 && Y - adjY < board.length && X - adjX > -1 && X - adjX < board[Y].length && board[Y - adjY][X - adjX].isBomb){
+                        board[Y][X].value += 1;
+                    }
+                }
+            }
+        }
+    }
+    return board;
 }
 
 const getRandom = (max) => Math.random() * max;
