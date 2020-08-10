@@ -1,7 +1,8 @@
 import {constant} from "./constant";
 
 export const initBoardState = (mode, setBoardState) => {
-    let boardSize, tmpBoard, finalBoard, bombCount;
+    let boardSize, bombCount;
+    let tmpBoard = [], finalBoard = [];
     switch(mode){
         case constant.MODE_INTERMEDIATE:
             boardSize = constant.MODE_INTERMEDIATE_BOARD_SIZE;
@@ -19,7 +20,8 @@ export const initBoardState = (mode, setBoardState) => {
 
     for(let i = 0; i < boardSize[0] * boardSize[1]; i++){
         tmpBoard[i] = {
-            'value' : getRandomInt(boardSize[0] * boardSize[1]),
+            'isBomb': false,
+            'value' : getRandom(boardSize[0] * boardSize[1]),
             'index' : i
         };
     }
@@ -28,14 +30,20 @@ export const initBoardState = (mode, setBoardState) => {
 
     for(let i = 0; i < boardSize[0] * boardSize[1]; i++){
         if(i < bombCount){
-
+            tmpBoard[i].isBomb = true;
         }
     }
 
+    tmpBoard.sort((a, b) => a.index - b.index);
 
-    setBoardState();
+    while(tmpBoard.length){
+        finalBoard.push(tmpBoard.splice(0, boardSize[0]));
+    }
+
+    console.log(finalBoard);
+    setBoardState(finalBoard);
 }
 
-const getRandomInt = (max) => Math.floor(Math.random() * Math.floor(max));
+const getRandom = (max) => Math.random() * max;
 
 
