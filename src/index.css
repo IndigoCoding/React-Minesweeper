@@ -17,22 +17,27 @@ code {
 }
 
 .cell {
+  display: inline-block;
   border: 1px solid black;
   min-width: 30px;
   min-height: 30px;
   margin: 0px;
-  float: left;
   cursor: pointer;
-}
-
-.cell-text {
-
-}
-
-.clear {
-  clear: both;
+  vertical-align: top;
 }
 
 .blank {
   opacity: 0;
+}
+
+.revealed{
+  -moz-box-shadow:    inset 0 0 10px #000000;
+  -webkit-box-shadow: inset 0 0 10px #000000;
+  box-shadow:         inset 0 0 10px #000000;
+  min-height: 30px;
+}
+
+.flagged {
+  background-color: red;
+  height: 30px;
 }

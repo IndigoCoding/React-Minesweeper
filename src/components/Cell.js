@@ -1,27 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {constant} from "../constant";
 
-const Cell = ({cell, onCellLeftClick}) => {
-    const [display, setDisplay] = useState(constant.DISPLAY_BLANK);
-
-    const onCellClick = () => {
-        if(!display){
-            setDisplay(constant.DISPLAY_VALUE);
-            onCellLeftClick(cell);
-        }
-    }
-
-    useEffect(() => {
-        if(!display){
-            document.getElementById(cell.index).classList.add('blank');
-        } else{
-            document.getElementById(cell.index).classList.remove('blank');
-        }
-    },[display]);
-
+const Cell = ({cell, onCellLeftClick, onCellRightClick}) => {
     return (
-        <div className="cell" onClick={() => {onCellClick()}}>
-            <div id={cell.index}>
+        <div className={"cell" + (cell.display === constant.DISPLAY_FLAG ? " flagged" : "")}
+             onClick={() => onCellLeftClick(cell)}
+             onContextMenu={(e) => {e.preventDefault(); onCellRightClick(cell)}}>
+            <div id={cell.index} className={cell.display === constant.DISPLAY_VALUE ? "revealed" : "blank"}>
                 {cell.isBomb ? '*' : cell.value ? cell.value : " "}
             </div>
         </div>

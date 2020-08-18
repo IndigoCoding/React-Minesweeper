@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import {initBoardState} from "./core";
+import {initBoardState, discoverBomb} from "./core";
 import {constant} from "./constant";
 import Board from './components/Board';
 
@@ -8,8 +8,8 @@ function App() {
 
     const [mode, setMode] = useState(constant.MODE_EASY);
     const [bombCount, setBombCount] = useState(constant.MODE_EASY_BOMB_COUNT);
-    const [boardState, setBoardState] = useState([]);
-    const [status, setStatus] = useState(false);
+    const [boardState, setBoardState] = useState({'size': constant.MODE_EASY_BOARD_SIZE, 'cells': []});
+    const [status, setStatus] = useState(constant.GAME_STATUS_NEW);
 
     const onCellLeftClick = (cell) => {
         if(status === constant.GAME_STATUS_NEW){
@@ -17,14 +17,34 @@ function App() {
         }
         if(cell.isBomb){
             setStatus(constant.GAME_STATUS_LOSE);
-        } else{
-
+        } else {
+            let displayArray = {
+                'list': []
+            }
+            discoverBomb(boardState, cell.index, displayArray, (status) => setStatus(status));
+            setBoardState({...boardState, 'cells': boardState.cells.map((cell) => {
+                    if(displayArray.list.includes(cell.index)){
+                        return {...cell, 'display': constant.DISPLAY_VALUE};
+                    } else {
+                        return cell;
+                    }
+            })})
         }
     };
 
+    const onCellRightClick = (cell) => {
+        if(status !== constant.GAME_STATUS_NEW){
+            setBoardState({...boardState, 'cells': boardState.cells.map((c) => {
+                return c.index === cell.index ? {...c, 'display': constant.DISPLAY_FLAG} : c;
+            })})
+        }
+    }
+
     useEffect(() => {
-        initBoardState(mode, setBoardState);
-    }, [mode]);
+        if(status === constant.GAME_STATUS_NEW) {
+            initBoardState(mode, setBoardState);
+        }
+    }, [mode, status]);
 
     useEffect(() => {
         console.log(bombCount);
@@ -33,15 +53,9 @@ function App() {
     useEffect(() => {
         if(status === constant.GAME_STATUS_LOSE){
             // reveal and disable the board
-            Array.from(document.getElementsByClassName('blank')).forEach((el) => {
-                el.classList.remove('blank');
+            setBoardState({...boardState, 'cells': boardState.cells.map((cell) => ({
+                    ...cell, 'display': constant.DISPLAY_VALUE}))
             })
-            document.getElementById('board').setAttribute('disabled', 'true');
-        } else if (status === constant.GAME_STATUS_NEW){
-            Array.from(document.getElementsByClassName('cell')).forEach((el) => {
-                el.firstChild.classList.add('blank');
-            })
-            document.getElementById('board').removeAttribute('disabled');
         }
     }, [status])
 
@@ -50,7 +64,10 @@ function App() {
             <h1>Minesweeper Version {process.env.REACT_APP_VERSION}</h1>
             <h3>Status: {status}</h3>
             <button onClick={() => {setStatus(constant.GAME_STATUS_NEW)}}>New Game</button>
-            <Board boardState={boardState} onCellLeftClick={(cell) => {onCellLeftClick(cell)}}/>
+            <Board boardState={boardState}
+                   gameStatus={status}
+                   onCellLeftClick={(cell) => onCellLeftClick(cell)}
+                   onCellRightClick={(cell) => onCellRightClick(cell)}/>
         </div>
     );
 }
