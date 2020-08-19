@@ -3,6 +3,8 @@ import './App.css';
 import {initBoardState, discoverBomb} from "./core";
 import {constant} from "./constant";
 import Board from './components/Board';
+import ControlBoard from "./components/ControlBoard";
+import StatusBoard from "./components/StatusBoard";
 
 function App() {
 
@@ -10,60 +12,128 @@ function App() {
     const [bombCount, setBombCount] = useState(constant.MODE_EASY_BOMB_COUNT);
     const [boardState, setBoardState] = useState({'size': constant.MODE_EASY_BOARD_SIZE, 'cells': []});
     const [status, setStatus] = useState(constant.GAME_STATUS_NEW);
+    const [elapsedTime, setElapsedTime] = useState(0);
 
     const onCellLeftClick = (cell) => {
         if(status === constant.GAME_STATUS_NEW){
             setStatus(constant.GAME_STATUS_IN_PROGRESS);
-        }
-        if(cell.isBomb){
-            setStatus(constant.GAME_STATUS_LOSE);
+            initBoardState(mode, setBoardState, setBombCount, cell.index, true);
         } else {
-            let displayArray = {
-                'list': []
-            }
-            discoverBomb(boardState, cell.index, displayArray, (status) => setStatus(status));
-            setBoardState({...boardState, 'cells': boardState.cells.map((cell) => {
-                    if(displayArray.list.includes(cell.index)){
-                        return {...cell, 'display': constant.DISPLAY_VALUE};
-                    } else {
-                        return cell;
+            if(cell.display === constant.DISPLAY_VALUE || cell.display === constant.DISPLAY_BLANK) {
+                if (cell.isBomb) {
+                    setStatus(constant.GAME_STATUS_LOSE);
+                } else {
+                    let displayArray = {
+                        'list': []
                     }
-            })})
+                    discoverBomb(boardState, cell.index, displayArray, setStatus);
+                    setBoardState({
+                        ...boardState, 'cells': boardState.cells.map((cell) => {
+                            if (displayArray.list.includes(cell.index)) {
+                                return {...cell, 'display': constant.DISPLAY_VALUE};
+                            } else {
+                                return cell;
+                            }
+                        })
+                    });
+                }
+            } else if (cell.display === constant.DISPLAY_DOUBT){
+                if (cell.isBomb) {
+                    setStatus(constant.GAME_STATUS_LOSE);
+                } else {
+                    setBoardState({...boardState, 'cells': boardState.cells.map((c) => {
+                            return (c.index === cell.index) ? {...cell, 'display': constant.DISPLAY_VALUE} : cell;
+                        })})
+                }
+            }
         }
+
     };
 
     const onCellRightClick = (cell) => {
         if(status !== constant.GAME_STATUS_NEW){
-            setBoardState({...boardState, 'cells': boardState.cells.map((c) => {
-                return c.index === cell.index ? {...c, 'display': constant.DISPLAY_FLAG} : c;
-            })})
+            let nextDisplay;
+            switch(cell.display){
+                case constant.DISPLAY_BLANK:
+                    nextDisplay = constant.DISPLAY_FLAG;
+                    setBombCount(bombCount - 1);
+                    break;
+                case constant.DISPLAY_FLAG:
+                    nextDisplay = constant.DISPLAY_DOUBT;
+                    setBombCount(bombCount + 1);
+                    break;
+                case constant.DISPLAY_DOUBT:
+                    nextDisplay = constant.DISPLAY_BLANK;
+                    break;
+                default:
+                    nextDisplay = null;
+            }
+            if(nextDisplay !== null) {
+                setBoardState({
+                    ...boardState, 'cells': boardState.cells.map((c) => {
+                        return c.index === cell.index ? {...c, 'display': nextDisplay} : c;
+                    })
+                })
+            }
+        }
+    }
+
+    const checkWinningCondition = () => {
+        let win = true;
+        boardState.cells.forEach((cell) => {
+            if(cell.display !== constant.DISPLAY_VALUE && !cell.isBomb){
+                win = false;
+            }
+        });
+        if(win){
+            setStatus(constant.GAME_STATUS_VICTORY);
         }
     }
 
     useEffect(() => {
         if(status === constant.GAME_STATUS_NEW) {
-            initBoardState(mode, setBoardState);
+            initBoardState(mode, setBoardState, setBombCount, null);
+            setElapsedTime(0);
+        } else if(status === constant.GAME_STATUS_IN_PROGRESS) {
+            setTimeout(() => {
+                setElapsedTime(elapsedTime + 1)
+            }, 1000)
         }
     }, [mode, status]);
 
     useEffect(() => {
-        console.log(bombCount);
-    }, [bombCount])
+        if(status === constant.GAME_STATUS_IN_PROGRESS){
+            checkWinningCondition();
+        }
+    }, [boardState]);
+
+    useEffect(() => {
+        if(status === constant.GAME_STATUS_IN_PROGRESS) {
+            setTimeout(() => {
+                setElapsedTime(elapsedTime + 1)
+            }, 1000)
+        }
+    }, [elapsedTime]);
 
     useEffect(() => {
         if(status === constant.GAME_STATUS_LOSE){
             // reveal and disable the board
-            setBoardState({...boardState, 'cells': boardState.cells.map((cell) => ({
-                    ...cell, 'display': constant.DISPLAY_VALUE}))
-            })
+            setBoardState({...boardState, 'cells': boardState.cells.map((cell) => {
+                if(cell.display === constant.DISPLAY_BLANK) {
+                    return {...cell, 'display': constant.DISPLAY_VALUE}
+                } else {
+                    return cell;
+                }
+            })})
         }
     }, [status])
 
     return (
         <div className="App">
             <h1>Minesweeper Version {process.env.REACT_APP_VERSION}</h1>
-            <h3>Status: {status}</h3>
-            <button onClick={() => {setStatus(constant.GAME_STATUS_NEW)}}>New Game</button>
+            <StatusBoard status={status} bombCount={bombCount} elapsedTime={elapsedTime}/>
+            <ControlBoard setStatus={(status) => setStatus(status)}
+                          setMode ={(mode) => setMode(mode)}/>
             <Board boardState={boardState}
                    gameStatus={status}
                    onCellLeftClick={(cell) => onCellLeftClick(cell)}

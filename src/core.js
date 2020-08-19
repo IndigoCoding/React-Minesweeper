@@ -1,6 +1,6 @@
 import {constant} from "./constant";
 
-export const initBoardState = (mode, setBoardState) => {
+export const initBoardState = (mode, setBoardState, setBombCount, index, firstMove = false) => {
     let boardSize, bombCount;
     switch(mode){
         case constant.MODE_INTERMEDIATE:
@@ -24,7 +24,7 @@ export const initBoardState = (mode, setBoardState) => {
     for(let i = 0; i < boardSize[0] * boardSize[1]; i++){
         tmpBoard.cells[i] = {
             'isBomb': false,
-            'sortValue' : getRandom(boardSize[0] * boardSize[1]),
+            'sortValue' : (i === index && firstMove) ? 0 : getRandom(boardSize[0] * boardSize[1]),
             'value' : 0,
             'index' : i,
             'display': constant.DISPLAY_BLANK
@@ -40,8 +40,23 @@ export const initBoardState = (mode, setBoardState) => {
     }
 
     tmpBoard.cells.sort((a, b) => a.index - b.index);
-
-    setBoardState(countBombNumber(tmpBoard, boardSize));
+    setBombCount(bombCount);
+    let finalBoard = countBombNumber(tmpBoard, boardSize);
+    if(!firstMove) {
+        setBoardState(finalBoard)
+    } else{
+        let displayArray = {
+            'list': []
+        }
+        discoverBomb(finalBoard, index, displayArray);
+        setBoardState({...finalBoard, 'cells': finalBoard.cells.map((cell) => {
+                if(displayArray.list.includes(cell.index)){
+                    return {...cell, 'display': constant.DISPLAY_VALUE};
+                } else {
+                    return cell;
+                }
+            })});
+    }
 }
 
 const countBombNumber = (board, boardSize) => {
@@ -62,8 +77,8 @@ const countBombNumber = (board, boardSize) => {
 
 const getRandom = (max) => Math.random() * max;
 
-export const discoverBomb = (board, index, displayArray, setStatus) => {
-    if(board.cells[index].isBomb){
+export const discoverBomb = (board, index, displayArray, setStatus = null) => {
+    if(board.cells[index].isBomb && setStatus){
         setStatus(constant.GAME_STATUS_LOSE);
     }
     let adjCellList = [];
@@ -76,33 +91,33 @@ export const discoverBomb = (board, index, displayArray, setStatus) => {
             }
         }
     }
+    displayArray.list.push(index);
     if(board.cells[index].display === constant.DISPLAY_BLANK) {
         if(board.cells[index].value){
-            displayArray.list.push(index);
         } else {
-            displayArray.list.push(index);
             adjCellList.forEach((adjCell) => {
-                if(!displayArray.list.includes(adjCell)){
-                    discoverBomb(board, adjCell, displayArray);
+                if(!displayArray.list.includes(adjCell) && board.cells[adjCell].display === constant.DISPLAY_BLANK){
+                    discoverBomb(board, adjCell, displayArray, setStatus);
                 }
             });
         }
     } else if(board.cells[index].display === constant.DISPLAY_VALUE) {
         let flagCount = 0, bombCount = 0;
         adjCellList.forEach((adjCell) => {
-            if(!displayArray.list.includes(adjCell)){
+            // if(!displayArray.list.includes(adjCell)){
                 if(board.cells[adjCell].display === constant.DISPLAY_FLAG){
                     flagCount += 1;
                 }
                 if(board.cells[adjCell].isBomb){
                     bombCount += 1;
                 }
-            }
+            // }
         });
         if(flagCount === bombCount){
             adjCellList.forEach((adjCell) => {
                 if(board.cells[adjCell].display === constant.DISPLAY_BLANK) {
-                    discoverBomb(board, adjCell, displayArray);
+                    board.cells[adjCell].display = constant.DISPLAY_VALUE;
+                    discoverBomb(board, adjCell, displayArray, setStatus);
                 }
             })
         }

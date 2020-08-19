@@ -4,7 +4,7 @@ import {constant} from "../constant";
 
 const Board = ({boardState, gameStatus, onCellLeftClick, onCellRightClick}) => {
     return (
-        <div id="board" disabled={gameStatus === constant.GAME_STATUS_LOSE}>
+        <div id="board" disabled={gameStatus === constant.GAME_STATUS_LOSE || gameStatus === constant.GAME_STATUS_VICTORY}>
             {
                 boardState.cells.map((cell) => {
                     return (

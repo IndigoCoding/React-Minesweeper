@@ -24,10 +24,14 @@ code {
   margin: 0px;
   cursor: pointer;
   vertical-align: top;
+  user-select: none;
 }
 
 .blank {
-  opacity: 0;
+  -webkit-box-shadow: 0 0 10px #ccc;
+  box-shadow:         0 0 10px #ccc;
+  min-height: 30px;
+  background-color: #ddd;
 }
 
 .revealed{
@@ -39,5 +43,10 @@ code {
 
 .flagged {
   background-color: red;
-  height: 30px;
+  min-height: 30px;
+}
+
+.doubted{
+  background-color: green;
+  min-height: 30px;
 }
