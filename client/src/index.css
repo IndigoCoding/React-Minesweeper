@@ -14,6 +14,8 @@ code {
 
 #board {
   display: inline-block;
+  align-self: stretch;
+  width: 100%;
 }
 
 .cell {
@@ -49,4 +51,25 @@ code {
 .doubted{
   background-color: green;
   min-height: 30px;
+}
+
+.highscore-board{
+  text-align: center;
+  align-self: start;
+}
+
+.control-board{
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 25%;
+}
+
+.main-horizontal{
+  display: flex;
+}
+
+.popup-content{
+  width: 15%!important;
+  text-align: center;
 }

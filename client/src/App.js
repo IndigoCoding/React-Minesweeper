@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 import './App.css';
 import {initBoardState, discoverBomb} from "./core";
 import {constant} from "./constant";
 import Board from './components/Board';
 import ControlBoard from "./components/ControlBoard";
 import StatusBoard from "./components/StatusBoard";
+import HighscoreBoard from "./components/HighscoreBoard";
+import Modal from "./components/Modal";
 
 function App() {
 
@@ -13,6 +16,8 @@ function App() {
     const [boardState, setBoardState] = useState({'size': constant.MODE_EASY_BOARD_SIZE, 'cells': []});
     const [status, setStatus] = useState(constant.GAME_STATUS_NEW);
     const [elapsedTime, setElapsedTime] = useState(0);
+    const [highscore, setHighscore] = useState({'easy': [], 'intermediate': [], 'expert': []});
+    const [updateHighscore, setUpdateHighscore] = useState(true);
 
     const onCellLeftClick = (cell) => {
         if(status === constant.GAME_STATUS_NEW){
@@ -90,6 +95,20 @@ function App() {
         }
     }
 
+    const postHighscore = (name) => {
+        let textMode = mode === constant.MODE_EASY ? 'easy' :
+            mode === constant.MODE_INTERMEDIATE ? 'intermediate' :
+            mode === constant.MODE_EXPERT ? 'expert' : null;
+        axios.post('http://localhost:3000/highscore', {name, score: elapsedTime, mode: textMode})
+            .then((res) => {
+                if(res.data.status){
+                    let newHighscore = {...highscore};
+                    newHighscore[textMode] = res.data.response;
+                    setHighscore(newHighscore);
+                }
+            });
+    }
+
     useEffect(() => {
         if(status === constant.GAME_STATUS_NEW) {
             initBoardState(mode, setBoardState, setBombCount, null);
@@ -128,16 +147,50 @@ function App() {
         }
     }, [status])
 
+    useEffect(() => {
+        if(updateHighscore){
+            setUpdateHighscore(false);
+            let newHighscore = {...highscore};
+            axios.get(`http://localhost:3000/highscore?mode=easy`)
+                .then(res => {
+                    if(res.data.status){
+                        newHighscore.easy = res.data.response;
+                        axios.get(`http://localhost:3000/highscore?mode=intermediate`)
+                            .then(res => {
+                                if(res.data.status){
+                                    newHighscore.intermediate = res.data.response;
+                                    axios.get(`http://localhost:3000/highscore?mode=expert`)
+                                        .then(res => {
+                                            if(res.data.status){
+                                                newHighscore.expert = res.data.response;
+                                                setHighscore(newHighscore);
+                                            }
+                                        })
+                                }
+                            })
+                    }
+                })
+        }
+    })
+
     return (
         <div className="App">
             <h1>Minesweeper Version {process.env.REACT_APP_VERSION}</h1>
             <StatusBoard status={status} bombCount={bombCount} elapsedTime={elapsedTime}/>
-            <ControlBoard setStatus={(status) => setStatus(status)}
-                          setMode ={(mode) => setMode(mode)}/>
-            <Board boardState={boardState}
-                   gameStatus={status}
-                   onCellLeftClick={(cell) => onCellLeftClick(cell)}
-                   onCellRightClick={(cell) => onCellRightClick(cell)}/>
+            <div className="main-horizontal">
+                <ControlBoard setStatus={(status) => setStatus(status)}
+                              setMode ={(mode) => setMode(mode)}/>
+                <Board boardState={boardState}
+                       gameStatus={status}
+                       onCellLeftClick={(cell) => onCellLeftClick(cell)}
+                       onCellRightClick={(cell) => onCellRightClick(cell)}/>
+                <div className="highscore-board">
+                    <HighscoreBoard mode="easy" highscore={highscore}/>
+                    <HighscoreBoard mode="intermediate" highscore={highscore}/>
+                    <HighscoreBoard mode="expert" highscore={highscore}/>
+                </div>
+            </div>
+            <Modal postHighscore={(name) => postHighscore(name)} gameStatus={status}/>
         </div>
     );
 }

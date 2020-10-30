@@ -3,7 +3,7 @@ import {constant} from '../constant';
 
 const ControlBoard = ({setStatus, setMode}) => {
     return (
-        <div>
+        <div className="control-board">
             <button onClick={() => {setStatus(constant.GAME_STATUS_NEW)}}>New Game</button>
             <button onClick={() => {
                 setMode(constant.MODE_EASY);
