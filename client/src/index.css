@@ -67,7 +67,7 @@ code {
   align-self: start;
   display: flex;
   flex-direction: column;
-  flex-basis: 15%;
+  flex-basis: 5%;
 }
 
 .main-horizontal{
