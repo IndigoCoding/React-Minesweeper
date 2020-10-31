@@ -12,10 +12,15 @@ code {
     monospace;
 }
 
+.App {
+  padding-bottom: 100px;
+}
+
 #board {
   display: inline-block;
   align-self: stretch;
   width: 100%;
+  flex-basis: 70%;
 }
 
 .cell {
@@ -62,14 +67,18 @@ code {
   align-self: start;
   display: flex;
   flex-direction: column;
-  flex-basis: 25%;
+  flex-basis: 15%;
 }
 
 .main-horizontal{
   display: flex;
 }
 
-.popup-content{
+.highscore-popup-content{
   width: 15%!important;
   text-align: center;
+}
+
+.highscore-popup-content input{
+  max-width: 80%;
 }

@@ -18,6 +18,7 @@ function App() {
     const [elapsedTime, setElapsedTime] = useState(0);
     const [highscore, setHighscore] = useState({'easy': [], 'intermediate': [], 'expert': []});
     const [updateHighscore, setUpdateHighscore] = useState(true);
+    const [showHighscorePopup, setShowHighscorePopup] = useState(false);
 
     const onCellLeftClick = (cell) => {
         if(status === constant.GAME_STATUS_NEW){
@@ -145,6 +146,9 @@ function App() {
                 }
             })})
         }
+        if(status === constant.GAME_STATUS_VICTORY){
+            setShowHighscorePopup(true);
+        }
     }, [status])
 
     useEffect(() => {
@@ -190,7 +194,8 @@ function App() {
                     <HighscoreBoard mode="expert" highscore={highscore}/>
                 </div>
             </div>
-            <Modal postHighscore={(name) => postHighscore(name)} gameStatus={status}/>
+            <Modal postHighscore={(name) => postHighscore(name)} showHighscorePopup={showHighscorePopup}
+                setShowHighscorePopup={(v) => {setShowHighscorePopup(v)}}/>
         </div>
     );
 }
