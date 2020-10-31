@@ -100,7 +100,7 @@ function App() {
         let textMode = mode === constant.MODE_EASY ? 'easy' :
             mode === constant.MODE_INTERMEDIATE ? 'intermediate' :
             mode === constant.MODE_EXPERT ? 'expert' : null;
-        axios.post('http://localhost:3000/highscore', {name, score: elapsedTime, mode: textMode})
+        axios.post(process.env.REACT_APP_SERVER_URL + "/highscore", {name, score: elapsedTime, mode: textMode})
             .then((res) => {
                 if(res.data.status){
                     let newHighscore = {...highscore};
@@ -155,15 +155,15 @@ function App() {
         if(updateHighscore){
             setUpdateHighscore(false);
             let newHighscore = {...highscore};
-            axios.get(`http://localhost:3000/highscore?mode=easy`)
+            axios.get(process.env.REACT_APP_SERVER_URL + "/highscore?mode=easy")
                 .then(res => {
                     if(res.data.status){
                         newHighscore.easy = res.data.response;
-                        axios.get(`http://localhost:3000/highscore?mode=intermediate`)
+                        axios.get(process.env.REACT_APP_SERVER_URL + "/highscore?mode=intermediate")
                             .then(res => {
                                 if(res.data.status){
                                     newHighscore.intermediate = res.data.response;
-                                    axios.get(`http://localhost:3000/highscore?mode=expert`)
+                                    axios.get(process.env.REACT_APP_SERVER_URL + "/highscore?mode=expert")
                                         .then(res => {
                                             if(res.data.status){
                                                 newHighscore.expert = res.data.response;
