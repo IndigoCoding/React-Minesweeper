@@ -16,7 +16,7 @@ app.use(helmet());
 app.use(cors());
 
 const connection = mysql.createConnection({
-    host: 'localhost',
+    host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     database: 'minesweeper'
