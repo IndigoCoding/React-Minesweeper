@@ -61,13 +61,14 @@ code {
 .highscore-board{
   text-align: center;
   align-self: start;
+  flex-basis: 5%;
 }
 
 .control-board{
   align-self: start;
   display: flex;
   flex-direction: column;
-  flex-basis: 5%;
+  flex-basis: 15%;
 }
 
 .main-horizontal{
