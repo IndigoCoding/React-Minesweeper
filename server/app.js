@@ -58,7 +58,7 @@ app.get('/highscore', (req, res) => {
         res.json(response);
     } else {
         try {
-            let sql = "SELECT * FROM " + highscore_table + " WHERE mode = " + connection.escape(req.query.mode) + " ORDER BY score DESC LIMIT 10";
+            let sql = "SELECT * FROM " + highscore_table + " WHERE mode = " + connection.escape(req.query.mode) + " ORDER BY score ASC LIMIT 10";
             connection.query(sql, function(error, results, fields){
                 if (error) throw error;
                 response.status = true;
