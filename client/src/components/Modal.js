@@ -6,7 +6,7 @@ import {constant} from "../constant";
 const Modal = ({postHighscore, showHighscorePopup, setShowHighscorePopup}) => {
     const [name, setName] = useState(null);
     return(
-        <Popup className="highscore-popup" open={showHighscorePopup} modal>
+        <Popup className="highscore-popup" open={showHighscorePopup} modal onClose={()=>{setShowHighscorePopup(false)}}>
             <h2>VICTORY!</h2>
             <form method="POST" onSubmit={(event) => {event.preventDefault(); postHighscore(name);
                 setShowHighscorePopup(false);}}>

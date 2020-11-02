@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const process = require('process');
 const helmet = require('helmet');
 const cors = require('cors');
+const moment = require('moment');
 
 const app = express();
 const port = 3000;
@@ -63,6 +64,9 @@ app.get('/highscore', (req, res) => {
                 if (error) throw error;
                 response.status = true;
                 response.response = results;
+                response.response.forEach(function(v){
+                    v.date = moment.utc(v.date).format('YYYY/MM/DD');
+                })
                 res.json(response);
             })
         } catch (e) {
@@ -86,11 +90,14 @@ app.post('/highscore', (req, res) => {
                 res.json(response);
             } else {
                 try {
-                    let sql = "SELECT * FROM " + highscore_table + " WHERE mode = " + connection.escape(req.body.mode) + " ORDER BY score DESC LIMIT 10";
+                    let sql = "SELECT * FROM " + highscore_table + " WHERE mode = " + connection.escape(req.body.mode) + " ORDER BY score ASC LIMIT 10";
                     connection.query(sql, function(error, results, fields){
                         if (error) throw error;
                         response.status = true;
                         response.response = results;
+                        response.response.forEach(function(v){
+                            v.date = moment.utc(v.date).format('YYYY/MM/DD');
+                        })
                         res.json(response);
                     })
                 } catch (e) {
