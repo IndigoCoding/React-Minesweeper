@@ -5,6 +5,7 @@ const process = require('process');
 const helmet = require('helmet');
 const cors = require('cors');
 const moment = require('moment');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -46,10 +47,6 @@ process.on("SIGINT", function () {
     //graceful shutdown
     connection.destroy();
     process.exit();
-});
-
-app.get('/', (req, res) => {
-    res.send('!')
 });
 
 app.get('/highscore', (req, res) => {
@@ -107,6 +104,14 @@ app.post('/highscore', (req, res) => {
             }
         })
     }
+});
+
+app.get('/dino.css', function(req, res) {
+    res.sendFile(path.join(__dirname + '/dino.css'));
+});
+
+app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname + '/404.html'));
 });
 
 app.listen(port, () => {

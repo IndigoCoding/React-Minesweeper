@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import './App.css';
 import {initBoardState, discoverBomb} from "./core";
 import {constant} from "./constant";
 import Board from './components/Board';
@@ -8,6 +7,7 @@ import ControlBoard from "./components/ControlBoard";
 import StatusBoard from "./components/StatusBoard";
 import HighscoreBoard from "./components/HighscoreBoard";
 import Modal from "./components/Modal";
+import banner from "./assets/banner.png";
 
 function App() {
 
@@ -18,7 +18,7 @@ function App() {
     const [elapsedTime, setElapsedTime] = useState(0);
     const [highscore, setHighscore] = useState({'easy': [], 'intermediate': [], 'expert': []});
     const [updateHighscore, setUpdateHighscore] = useState(true);
-    const [showHighscorePopup, setShowHighscorePopup] = useState(false);
+    const [showPopup, setShowPopup] = useState(0);
 
     const onCellLeftClick = (cell) => {
         if(status === constant.GAME_STATUS_NEW){
@@ -147,7 +147,9 @@ function App() {
             })})
         }
         if(status === constant.GAME_STATUS_VICTORY){
-            setShowHighscorePopup(true);
+            setShowPopup(1);
+        } else if(status === constant.GAME_STATUS_LOSE){
+            setShowPopup(-1);
         }
     }, [status])
 
@@ -179,7 +181,10 @@ function App() {
 
     return (
         <div className="App">
-            <h1>Minesweeper Version {process.env.REACT_APP_VERSION}</h1>
+            <div className="banner-top gradient-border">
+                <img src={banner} alt=""/>
+
+            </div>
             <StatusBoard status={status} bombCount={bombCount} elapsedTime={elapsedTime}/>
             <div className="main-horizontal">
                 <ControlBoard setStatus={(status) => setStatus(status)}
@@ -194,8 +199,8 @@ function App() {
                     <HighscoreBoard mode="expert" highscore={highscore}/>
                 </div>
             </div>
-            <Modal postHighscore={(name) => postHighscore(name)} showHighscorePopup={showHighscorePopup}
-                setShowHighscorePopup={(v) => {setShowHighscorePopup(v)}}/>
+            <Modal postHighscore={(name) => postHighscore(name)} showPopup={showPopup}
+                setShowPopup={(v) => {setShowPopup(v)}}/>
         </div>
     );
 }

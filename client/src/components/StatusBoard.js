@@ -3,10 +3,10 @@ import {constant} from '../constant';
 
 const StatusBoard = ({status, bombCount, elapsedTime}) => {
     return (
-        <div>
-            <h3>Game Status: {status}</h3>
-            <h3>Elapsed Time: {elapsedTime}</h3>
-            <h3>Bomb Count: {bombCount} </h3>
+        <div className="status-board">
+            <span className="game-status">Game Status: {status}</span>
+            <span className="bomb-count">Bomb Count: {bombCount} </span>
+            <span className="elapsed-time">Elapsed Time: {elapsedTime}</span>
         </div>
     )
 }

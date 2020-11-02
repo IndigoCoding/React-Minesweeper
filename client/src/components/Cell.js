@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Cell = ({cell, onCellLeftClick, onCellRightClick}) => {
     return (
-        <div className="cell" id={cell.index}
+        <div className={"cell cell-" + cell.value} id={cell.index}
              onClick={() => onCellLeftClick(cell)}
              onContextMenu={(e) => {e.preventDefault(); onCellRightClick(cell)}}>
             {

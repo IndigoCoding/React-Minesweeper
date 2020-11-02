@@ -1,3 +1,9 @@
+@import "cell.css";
+@import "banner-top.css";
+.App {
+  text-align: center;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -42,43 +48,6 @@ table tr:nth-child(even){
   flex-basis: 70%;
 }
 
-.cell {
-  display: inline-block;
-  border: 1px solid black;
-  min-width: 30px;
-  min-height: 30px;
-  margin: 0px;
-  cursor: pointer;
-  vertical-align: top;
-  user-select: none;
-  width: 30px;
-  height: 30px;
-}
-
-.blank {
-  -webkit-box-shadow: 0 0 10px #ccc;
-  box-shadow:         0 0 10px #ccc;
-  min-height: 30px;
-  background-color: #ddd;
-}
-
-.revealed{
-  -moz-box-shadow:    inset 0 0 10px #000000;
-  -webkit-box-shadow: inset 0 0 10px #000000;
-  box-shadow:         inset 0 0 10px #000000;
-  min-height: 30px;
-}
-
-.flagged {
-  background-color: red;
-  min-height: 30px;
-}
-
-.doubted{
-  background-color: green;
-  min-height: 30px;
-}
-
 .highscore-board{
   text-align: center;
   align-self: start;
@@ -103,4 +72,35 @@ table tr:nth-child(even){
 
 .highscore-popup-content input{
   max-width: 80%;
+}
+
+.defeat-popup-content {
+  width: auto!important;
+  border: none!important;
+  padding: 0px!important;
+  opacity: 0.9;
+  background: none!important;
+}
+
+.status-board {
+  display: flex;
+  margin: 10px;
+}
+
+.status-board span{
+  padding: 2px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.status-board .game-status{
+  flex-basis: 15%;
+}
+
+.status-board .bomb-count{
+  flex-basis: 70%;
+}
+
+.status-board .elapsed-time{
+  flex-basis: 15%;
 }
