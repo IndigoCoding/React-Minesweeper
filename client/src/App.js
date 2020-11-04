@@ -5,7 +5,7 @@ import {constant} from "./constant";
 import Board from './components/Board';
 import ControlBoard from "./components/ControlBoard";
 import StatusBoard from "./components/StatusBoard";
-import HighscoreBoard from "./components/HighscoreBoard";
+import HighscoreTab from "./components/highscore/HighscoreTab";
 import Modal from "./components/Modal";
 import banner from "./assets/banner.png";
 
@@ -193,14 +193,11 @@ function App() {
                        gameStatus={status}
                        onCellLeftClick={(cell) => onCellLeftClick(cell)}
                        onCellRightClick={(cell) => onCellRightClick(cell)}/>
-                <div className="highscore-board">
-                    <HighscoreBoard mode="easy" highscore={highscore}/>
-                    <HighscoreBoard mode="intermediate" highscore={highscore}/>
-                    <HighscoreBoard mode="expert" highscore={highscore}/>
-                </div>
+                <HighscoreTab highscore={highscore}/>
             </div>
             <Modal postHighscore={(name) => postHighscore(name)} showPopup={showPopup}
                 setShowPopup={(v) => {setShowPopup(v)}}/>
+
         </div>
     );
 }

@@ -21,6 +21,7 @@ code {
 table {
   border-collapse: collapse;
   padding: 1px;
+  width: 100%;
 }
 
 table, th, td {
@@ -63,6 +64,7 @@ table tr:nth-child(even){
 
 .main-horizontal{
   display: flex;
+  padding: 10px;
 }
 
 .highscore-popup-content{

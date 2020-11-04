@@ -4,7 +4,6 @@ const HighscoreBoard = ({mode, highscore}) => {
     return (
         <div id={"highscore-board-" + mode}>
             <table>
-                <caption> Highscore mode: {mode}</caption>
                 <thead>
                 <tr>
                     <th>Position</th>
