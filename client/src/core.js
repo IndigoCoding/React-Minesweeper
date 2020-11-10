@@ -92,9 +92,8 @@ export const discoverBomb = (board, index, displayArray, setStatus = null) => {
         }
     }
     displayArray.list.push(index);
-    if(board.cells[index].display === constant.DISPLAY_BLANK) {
-        if(board.cells[index].value){
-        } else {
+    if(board.cells[index].display === constant.DISPLAY_BLANK || board.cells[index].display === constant.DISPLAY_DOUBT) {
+        if(!board.cells[index].value){
             adjCellList.forEach((adjCell) => {
                 if(!displayArray.list.includes(adjCell) && board.cells[adjCell].display === constant.DISPLAY_BLANK){
                     discoverBomb(board, adjCell, displayArray, setStatus);

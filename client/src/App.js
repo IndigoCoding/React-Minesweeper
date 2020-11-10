@@ -25,36 +25,30 @@ function App() {
             setStatus(constant.GAME_STATUS_IN_PROGRESS);
             initBoardState(mode, setBoardState, setBombCount, cell.index, true);
         } else {
-            if(cell.display === constant.DISPLAY_VALUE || cell.display === constant.DISPLAY_BLANK) {
-                if (cell.isBomb) {
-                    setStatus(constant.GAME_STATUS_LOSE);
-                } else {
-                    let displayArray = {
-                        'list': []
-                    }
-                    discoverBomb(boardState, cell.index, displayArray, setStatus);
-                    setBoardState({
-                        ...boardState, 'cells': boardState.cells.map((cell) => {
-                            if (displayArray.list.includes(cell.index)) {
-                                return {...cell, 'display': constant.DISPLAY_VALUE};
-                            } else {
-                                return cell;
-                            }
-                        })
-                    });
-                }
-            } else if (cell.display === constant.DISPLAY_DOUBT){
-                if (cell.isBomb) {
-                    setStatus(constant.GAME_STATUS_LOSE);
-                } else {
-                    setBoardState({...boardState, 'cells': boardState.cells.map((c) => {
-                            return (c.index === cell.index) ? {...cell, 'display': constant.DISPLAY_VALUE} : cell;
-                        })})
-                }
-            }
+            leftClickValidCell(cell);
         }
 
     };
+
+    const leftClickValidCell = (cell) => {
+        if (cell.isBomb) {
+            setStatus(constant.GAME_STATUS_LOSE);
+        } else {
+            let displayArray = {
+                'list': []
+            }
+            discoverBomb(boardState, cell.index, displayArray, setStatus);
+            setBoardState({
+                ...boardState, 'cells': boardState.cells.map((cell) => {
+                    if (displayArray.list.includes(cell.index)) {
+                        return {...cell, 'display': constant.DISPLAY_VALUE};
+                    } else {
+                        return cell;
+                    }
+                })
+            });
+        }
+    }
 
     const onCellRightClick = (cell) => {
         if(status !== constant.GAME_STATUS_NEW){
@@ -141,6 +135,10 @@ function App() {
             setBoardState({...boardState, 'cells': boardState.cells.map((cell) => {
                 if(cell.display === constant.DISPLAY_BLANK) {
                     return {...cell, 'display': constant.DISPLAY_VALUE}
+                } else if (cell.display === constant.DISPLAY_FLAG && cell.isBomb){
+                    return {...cell, 'display': constant.DISPLAY_DOUBT}
+                } else if (cell.display === constant.DISPLAY_DOUBT && cell.isBomb) {
+                    return {...cell, 'display': constant.DISPLAY_VALUE};
                 } else {
                     return cell;
                 }
