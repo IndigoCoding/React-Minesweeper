@@ -114,7 +114,7 @@ export const discoverBomb = (board, index, displayArray, setStatus = null) => {
         });
         if(flagCount === bombCount){
             adjCellList.forEach((adjCell) => {
-                if(board.cells[adjCell].display === constant.DISPLAY_BLANK) {
+                if(board.cells[adjCell].display === constant.DISPLAY_BLANK || board.cells[adjCell].display === constant.DISPLAY_DOUBT) {
                     board.cells[adjCell].display = constant.DISPLAY_VALUE;
                     discoverBomb(board, adjCell, displayArray, setStatus);
                 }

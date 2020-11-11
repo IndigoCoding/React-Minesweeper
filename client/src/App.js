@@ -31,22 +31,24 @@ function App() {
     };
 
     const leftClickValidCell = (cell) => {
-        if (cell.isBomb) {
+        if (cell.isBomb && cell.display !== constant.DISPLAY_FLAG) {
             setStatus(constant.GAME_STATUS_LOSE);
         } else {
-            let displayArray = {
-                'list': []
+            if(cell.display !== constant.DISPLAY_FLAG){
+                let displayArray = {
+                    'list': []
+                }
+                discoverBomb(boardState, cell.index, displayArray, setStatus);
+                setBoardState({
+                    ...boardState, 'cells': boardState.cells.map((cell) => {
+                        if (displayArray.list.includes(cell.index)) {
+                            return {...cell, 'display': constant.DISPLAY_VALUE};
+                        } else {
+                            return cell;
+                        }
+                    })
+                });
             }
-            discoverBomb(boardState, cell.index, displayArray, setStatus);
-            setBoardState({
-                ...boardState, 'cells': boardState.cells.map((cell) => {
-                    if (displayArray.list.includes(cell.index)) {
-                        return {...cell, 'display': constant.DISPLAY_VALUE};
-                    } else {
-                        return cell;
-                    }
-                })
-            });
         }
     }
 
