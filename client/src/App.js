@@ -133,6 +133,7 @@ function App() {
 
     useEffect(() => {
         if(status === constant.GAME_STATUS_LOSE){
+            console.log('u lose');
             // reveal and disable the board
             setBoardState({...boardState, 'cells': boardState.cells.map((cell) => {
                 if(cell.display === constant.DISPLAY_BLANK) {
