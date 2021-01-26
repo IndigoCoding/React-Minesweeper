@@ -1,14 +1,29 @@
-language: node_js
-node_js:
-  - "stable"
-branches:
-  only:
-    - master
-git:
-  depth: 5
-before_script:
-  - cd client
-  - npm install
-  - echo $test
-script:
-  - CI='' npm run build
+matrix:
+  include:
+  -   language: node_js
+      node_js:
+        - "stable"
+      branches:
+        only:
+          - master
+      git:
+        depth: 5
+      before_script:
+        - cd client
+        - npm install
+        - echo $test
+      script:
+        - CI='' npm run build
+
+  -   language: node_js
+      node_js:
+        - "stable"
+      branches:
+        only:
+          - master
+      git:
+        depth: 5
+      before_script:
+        - cd server
+        - pwd
+      script: skip
