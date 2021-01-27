@@ -40,13 +40,17 @@ matrix:
         - npm install
       script:
         - CI='' npm run build
+      before_deploy:
+        - zip -r latest build
+        - mkdir compressed_build
+        - mv latest.zip ./compressed_build/
       deploy:
         - provider: s3
           access_key_id: ${AWS_ACCESS_KEY}
           secret_access_key: ${AWS_SECRET_KEY}
           bucket: ${AWS_DEPLOY_BUCKET}
           skip_cleanup: true
-          local_dir: build
+          local_dir: compressed_build
 
   -   language: node_js
       node_js:
