@@ -23,7 +23,7 @@ const HighscoreTab = ({ highscore }) => {
 }
 
 HighscoreTab.propTypes = {
-  highscore: PropTypes.array
+  highscore: PropTypes.object
 }
 
 export default HighscoreTab

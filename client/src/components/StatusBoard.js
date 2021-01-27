@@ -12,7 +12,7 @@ const StatusBoard = ({ status, bombCount, elapsedTime }) => {
 }
 
 StatusBoard.propTypes = {
-  status: PropTypes.number,
+  status: PropTypes.string,
   bombCount: PropTypes.number,
   elapsedTime: PropTypes.number
 }

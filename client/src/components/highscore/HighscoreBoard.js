@@ -35,8 +35,8 @@ const HighscoreBoard = ({ mode, highscore }) => {
 }
 
 HighscoreBoard.propTypes = {
-  mode: PropTypes.func,
-  highscore: PropTypes.array
+  mode: PropTypes.string,
+  highscore: PropTypes.object
 }
 
 export default HighscoreBoard

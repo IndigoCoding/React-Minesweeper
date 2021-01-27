@@ -24,8 +24,8 @@ const Board = ({ boardState, gameStatus, onCellLeftClick, onCellRightClick }) =>
 }
 
 Board.propTypes = {
-  boardState: PropTypes.array,
-  gameStatus: PropTypes.number,
+  boardState: PropTypes.object,
+  gameStatus: PropTypes.string,
   onCellLeftClick: PropTypes.func,
   onCellRightClick: PropTypes.func
 }

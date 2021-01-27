@@ -25,7 +25,7 @@ const Cell = ({ cell, onCellLeftClick, onCellRightClick }) => {
 }
 
 Cell.propTypes = {
-  cell: PropTypes.array,
+  cell: PropTypes.object,
   onCellLeftClick: PropTypes.func,
   onCellRightClick: PropTypes.func
 }
