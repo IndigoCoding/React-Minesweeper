@@ -14,6 +14,9 @@ matrix:
   -   language: node_js
       node_js:
         - "stable"
+      cache:
+        directories:
+          - node_modules
       stage: test
       before_install:
         - cd client
@@ -25,6 +28,9 @@ matrix:
   -   language: node_js
       node_js:
         - "stable"
+      cache:
+        directories:
+          - node_modules
       stage: test
       before_install:
         - cd server
@@ -34,13 +40,15 @@ matrix:
   -   language: node_js
       node_js:
         - "stable"
+      cache:
+        directories:
+          - node_modules
       stage: deploy
       before_script:
         - cd client
         - npm install
       script:
         - CI='' npm run build
-      before_deploy:
         - zip -r minesweeper2 build
         - mkdir compressed_build
         - mv minesweeper2.zip ./compressed_build/
