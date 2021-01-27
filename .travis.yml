@@ -1,8 +1,51 @@
-language: node_js
-node_js:
-  - "stable"
-before_script:
-  - cd client
-  - npm install
-script:
-  - CI='' npm run build
+branches:
+  only:
+    - master
+git:
+  depth: 5
+stages:
+    - name: test
+      if: type = pull_request
+    - name: deploy
+      if: type = push
+
+matrix:
+  include:
+  -   language: node_js
+      node_js:
+        - "stable"
+      stage: test
+      before_install:
+        - cd client
+      install:
+        - npm install
+      script:
+        - npm run lint
+
+  -   language: node_js
+      node_js:
+        - "stable"
+      stage: test
+      before_install:
+        - cd server
+      install:
+        - npm install
+
+  -   language: node_js
+      node_js:
+        - "stable"
+      stage: deploy
+      before_script:
+        - cd client
+        - npm install
+      script:
+        - CI='' npm run build
+
+  -   language: node_js
+      node_js:
+        - "stable"
+      stage: deploy
+      before_script:
+        - cd server
+      script:
+        - pwd
