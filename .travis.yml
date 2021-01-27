@@ -49,9 +49,8 @@ matrix:
         - npm install
       script:
         - CI='' npm run build
-        - zip -r minesweeper2 build
-        - mkdir compressed_build
-        - mv minesweeper2.zip ./compressed_build/
+        - mv build minesweeper2 ; cp ../appspec.yml ./minesweeper2/ ; zip -r minesweeper2
+        - mkdir compressed_build ; mv minesweeper2.zip ./compressed_build/
       deploy:
         - provider: s3
           access_key_id: ${AWS_ACCESS_KEY}
