@@ -9,70 +9,34 @@ stages:
     - name: deploy
       if: type = push
 
-jobs:
+matrix:
   include:
-    - stage: test
-      matrix:
+  -   language: node_js
+      node_js:
+        - "stable"
+      before_install:
+        - cd client
+      install:
+        - npm install
+      jobs:
         include:
-          - language: node_js
-            node_js:
-              - "stable"
-            before_install:
-              - cd client
-            install:
-              - npm install
+          - stage: test
             script:
               - npm run lint
-          - language: node_js
-            node_js:
-              - "stable"
-            before_install:
-              - cd server
-            install:
-              - npm install
-            script: skip
-    - stage: deploy
-      matrix:
-        include:
-          - language: node_js
-            node_js:
-              - "stable"
+          - stage: deploy
             script:
-              - cd client ; pwd
-          - language: node_js
-            node_js:
-              - "stable"
-            script:
-              - cd server ; pwd
+              - CI='' npm run build
 
-#matrix:
-#  include:
-#  -   language: node_js
-#      node_js:
-#        - "stable"
-#      before_install:
-#        - cd client
-#      install:
-#        - npm install
-#      jobs:
-#        include:
-#          - stage: test
-#            script:
-#              - npm run lint
-#          - stage: deploy
-#            script:
-#              - CI='' npm run build
-#
-#  -   language: node_js
-#      node_js:
-#        - "stable"
-#      before_install:
-#        - cd server
-#      install:
-#        - npm install
-#      jobs:
-#        include:
-#          - stage: test
-#            script: skip
-#          - stage: deploy
-#            script: skip
+  -   language: node_js
+      node_js:
+        - "stable"
+      before_install:
+        - cd server
+      install:
+        - npm install
+      jobs:
+        include:
+          - stage: test
+            script: skip
+          - stage: deploy
+            script: skip
