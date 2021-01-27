@@ -1,34 +1,42 @@
-import React from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const HighscoreBoard = ({mode, highscore}) => {
-    return (
-        <div id={"highscore-board-" + mode}>
-            <table>
-                <thead>
-                <tr>
-                    <th>Position</th>
-                    <th>Name</th>
-                    <th>Score</th>
-                    <th>Date</th>
-                </tr>
-                </thead>
-                <tbody>
-                {
-                    highscore[mode] ? highscore[mode].map((data, index) => {
-                        return (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{data.name}</td>
-                                <td>{data.score}</td>
-                                <td>{data.date}</td>
-                            </tr>
-                        )
-                    }) : <tr></tr>
-                }
-                </tbody>
-            </table>
-        </div>
-    );
+const HighscoreBoard = ({ mode, highscore }) => {
+  return (
+    <div id={'highscore-board-' + mode}>
+      <table>
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            highscore[mode]
+              ? highscore[mode].map((data, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{data.name}</td>
+                    <td>{data.score}</td>
+                    <td>{data.date}</td>
+                  </tr>
+                )
+              })
+              : <tr></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
-export default HighscoreBoard;
+HighscoreBoard.propTypes = {
+  mode: PropTypes.func,
+  highscore: PropTypes.array
+}
+
+export default HighscoreBoard
